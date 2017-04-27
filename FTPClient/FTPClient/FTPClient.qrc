@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/FTPClient">
+        <file>timg.png</file>
+        <file>download.png</file>
+        <file>downloadrel.png</file>
+        <file>finish.png</file>
+        <file>upload.png</file>
+        <file>uploadrel.png</file>
+        <file>wait.png</file>
+        <file>update.png</file>
+    </qresource>
+</RCC>
