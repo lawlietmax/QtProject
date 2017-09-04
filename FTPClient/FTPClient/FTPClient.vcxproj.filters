@@ -129,20 +129,18 @@
     <CustomBuild Include="TreeView.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_FTPClient.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_LoginWin.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
+    <CustomBuild Include="defineword.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="defineword.h">
+    </CustomBuild>
+    <CustomBuild Include="resource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\ui_FTPClient.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\ui_LoginWin.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FTPClient.rc" />

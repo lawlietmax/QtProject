@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'LoginWin.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.9.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -68,6 +68,7 @@ public:
 
         PW_Line = new QLineEdit(LoginWin);
         PW_Line->setObjectName(QStringLiteral("PW_Line"));
+        PW_Line->setEchoMode(QLineEdit::Password);
 
         formLayout->setWidget(1, QFormLayout::FieldRole, PW_Line);
 
@@ -98,8 +99,12 @@ public:
     {
         LoginWin->setWindowTitle(QApplication::translate("LoginWin", "LoginWin", Q_NULLPTR));
         label->setText(QApplication::translate("LoginWin", "\347\224\250\346\210\267\345\220\215:", Q_NULLPTR));
+        ID_Line->setPlaceholderText(QApplication::translate("LoginWin", "\345\234\250\346\255\244\350\274\270\345\205\245\347\224\250\346\210\267\345\220\215", Q_NULLPTR));
         label_2->setText(QApplication::translate("LoginWin", "\345\257\206\347\240\201:", Q_NULLPTR));
-        Login_Button->setText(QApplication::translate("LoginWin", "\347\231\273\345\275\225", Q_NULLPTR));
+        PW_Line->setInputMask(QString());
+        PW_Line->setText(QString());
+        PW_Line->setPlaceholderText(QApplication::translate("LoginWin", "\345\234\250\346\255\244\350\274\270\345\205\245\345\257\206\347\240\201", Q_NULLPTR));
+        Login_Button->setText(QApplication::translate("LoginWin", "\347\231\273\345\275\225(&Eeter)", Q_NULLPTR));
         anonymous_check->setText(QApplication::translate("LoginWin", "\345\214\277\345\220\215\347\231\273\345\275\225", Q_NULLPTR));
     } // retranslateUi
 

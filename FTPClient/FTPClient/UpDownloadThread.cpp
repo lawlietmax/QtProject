@@ -29,12 +29,14 @@ UpDownloadThread::UpDownloadThread(SOCKET &control, const char* Dest, const char
 			if (fseek(fp, Offest, SEEK_SET))
 			{
 				QMessageBox::information(NULL, QString::fromLocal8Bit("ÎÄ¼þÐ´´íÎó"), QString::fromLocal8Bit("%1 fseek ´íÎó offest %1").arg(Offest));
+				false_flag = 1;
 				return;
 			}
 		}
 		else
 		{
-			QMessageBox::information(NULL, QString::fromLocal8Bit("ÎÄ¼þÐ´´íÎó"), QString::fromLocal8Bit("%1Ð´´íÎó").arg(Dest));
+			QMessageBox::information(NULL, QString::fromLocal8Bit("ÎÄ¼þÐ´´íÎó"), QString::fromLocal8Bit("%1Ð´´íÎó").arg(QString::fromLocal8Bit(Dest)));
+			false_flag = 1;
 			return;
 		}
 	}
@@ -46,12 +48,14 @@ UpDownloadThread::UpDownloadThread(SOCKET &control, const char* Dest, const char
 			if (fseek(fp, Offest, SEEK_SET))
 			{
 				QMessageBox::information(NULL, QString::fromLocal8Bit("ÎÄ¼þ¶Á´íÎó"), QString::fromLocal8Bit("%1 fseek ´íÎó offest %1").arg(Offest));
+				false_flag = 1;
 				return;
 			}
 		}
 		else
 		{
-			QMessageBox::information(NULL, QString::fromLocal8Bit("ÎÄ¼þ¶Á´íÎó"), QString::fromLocal8Bit("%1¶Á´íÎó").arg(Sour));
+			QMessageBox::information(NULL, QString::fromLocal8Bit("ÎÄ¼þ¶Á´íÎó"), QString::fromLocal8Bit("%1¶Á´íÎó").arg(QString::fromLocal8Bit(Sour)));
+			false_flag = 1;
 			return;
 		}
 	}

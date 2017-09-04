@@ -62,6 +62,7 @@ void TableView::performDrag()
 		QMimeData *mimeData = new QMimeData;
 		QString url(Dir);
 		url.append(index->sibling(index->row(), 3).data(Qt::DisplayRole).toString());
+		qDebug() << url;
 		mimeData->setText(url);
 		QDrag *drag = new QDrag(this);
 		drag->setMimeData(mimeData);
@@ -73,6 +74,6 @@ void TableView::setDir(const char* dir)
 {
 	Dir.clear();
 	if (!dir) return;
-	Dir.append(dir);
+	Dir.append(QString::fromLocal8Bit(dir));
 	if (strcmp(dir, "/")) Dir.append("/");
 }

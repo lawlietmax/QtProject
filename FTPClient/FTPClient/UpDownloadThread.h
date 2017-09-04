@@ -21,6 +21,7 @@ class UpDownloadThread : public QThread
 signals:
 	void ViewFresh(QModelIndex& index);
 public:
+	bool false_flag = 0;
 	explicit UpDownloadThread(SOCKET &control, const char* Dest, const char* Sour, const char* hostip, u_short listenport, int TransmissionMode, QStandardItemModel &UpDownList_Model , int  Mode,  int row, long long offest, QObject *parent = 0);
 	~UpDownloadThread();
 	static int getThreadNum();

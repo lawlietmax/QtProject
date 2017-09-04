@@ -139,7 +139,7 @@ int FTPClient::status_msg(const char* recv_buf)
 	char showbuf[recv_len + 10];
 	int ret;
 	sscanf(recv_buf, "%d", &ret);
-	QStandardItem *Qs = new QStandardItem(QString(recv_buf));
+	QStandardItem *Qs = new QStandardItem(QString::fromLocal8Bit(recv_buf));
 	Msg_Model.appendRow(Qs);
 	sprintf(showbuf, "Response Code : %d", ret);
 	code_label.setText(showbuf);
@@ -239,8 +239,8 @@ void FTPClient::PrintfDir()
 
 	char *p = strtok(recv_buf, "\"");
 	p = strtok(NULL, "\"");
-	ui.Dir_Text->setText(p);
-	ui.FilesView->setDir(p);
+	ui.Dir_Text->setText(QString::fromLocal8Bit(p));
+	ui.FilesView->setDir(QString::fromLocal8Bit(p).toLocal8Bit());
 	/* 命令 ”LIST \r\n” */
 	sprintf(send_buf, "LIST \r\n");
 	/*客户端发送輸出目錄命令到服务器端 */
@@ -249,11 +249,11 @@ void FTPClient::PrintfDir()
 	recv_bytes = recv(control_sock, recv_buf, recv_len, 0);
 	recv_buf[recv_bytes] = '\0';
 	status_msg(recv_buf);
-
+	char *xxxbuf = new char[1024*1024*10];
 	/* 客户端接收目錄表 */
-	memset(&recv_buf, 0, sizeof(recv_buf));
-	recv(data_sock, recv_buf, recv_len, 0);
-	char* ap= recv_buf;
+	memset(xxxbuf, 0, 1024 * 1024 * 10);
+	recv(data_sock, xxxbuf, 1024 * 1024 * 10, 0);
+	char* ap= xxxbuf;
 	char* bp;
 	int row = 0;
 	QStandardItem* item;
@@ -328,9 +328,9 @@ void FTPClient::DoubleClickItem(const QModelIndex & curr_model)
 	QVariant FileName = curr_model.model()->data(FileNameIndex);
 	if (!strcmp(FileType.toString().toLocal8Bit().data(), "<DIR>"))
 	{
-		std::string EnterDir(ui.Dir_Text->text().toStdString());
+		std::string EnterDir(ui.Dir_Text->text().toLocal8Bit());
 		EnterDir.append("/");
-		EnterDir.append(FileName.toString().toStdString());
+		EnterDir.append(FileName.toString().toLocal8Bit());
 		ChangeDir(EnterDir.data());
 	}
 	else
@@ -371,9 +371,9 @@ void FTPClient::DownloadButtonClicked()
 	QVariant FileName = ui.FilesView->model()->data(FileNameIndex);
 	if (!strcmp(FileType.toString().toLocal8Bit().data(), "<DIR>"))
 	{
-		/*std::string EnterDir(ui.Dir_Text->text().toStdString());
+		/*std::string EnterDir(ui.Dir_Text->text().toLocal8Bit());
 		EnterDir.append("/");
-		EnterDir.append(FileName.toString().toStdString());
+		EnterDir.append(FileName.toString().toLocal8Bit());
 		ChangeDir(EnterDir.data());*/
 		//整個目錄下載
 	}
@@ -428,8 +428,8 @@ bool FTPClient::DownloadFile(const char* Dest, const char* Sour)
 	{
 		int row = UpDownList_Model.rowCount();
 		UpDownList_Model.setItem(row, 0, new QStandardItem(QString::fromLocal8Bit("准备下载")));
-		UpDownList_Model.setItem(row, 1, new QStandardItem(Sour));
-		UpDownList_Model.setItem(row, 2, new QStandardItem(Dest));
+		UpDownList_Model.setItem(row, 1, new QStandardItem(QString::fromLocal8Bit(Sour)));
+		UpDownList_Model.setItem(row, 2, new QStandardItem(QString::fromLocal8Bit(Dest)));
 		UpDownList_Model.setItem(row, 3, new QStandardItem(0));
 		UpDownList_Model.setItem(row, 4, new QStandardItem(0));
 		UpDownList_Model.setItem(row, 5, new QStandardItem(0));
@@ -442,6 +442,7 @@ bool FTPClient::DownloadFile(const char* Dest, const char* Sour)
 		UpDownloadThread *DT = new UpDownloadThread(newsocket, Dest, Sour, hostip, listenport, TransmissionMode, UpDownList_Model, DownloadMode, row, 0);
 		connect(DT, &QThread::finished, DT, &QThread::deleteLater);
 		connect(DT, &QThread::finished, this, &FTPClient::CheckWaitQueue);
+		if (DT->false_flag == 1)return false;
 		//connect(DT, &UpDownloadThread::ViewFresh, Progress, &ProgressDelegate::paint);
 		DT->start();
 	}
@@ -449,8 +450,8 @@ bool FTPClient::DownloadFile(const char* Dest, const char* Sour)
 	{//超過最大線程數.進入等待隊列
 		Task *newtask = new Task(hostip, Dest, Sour, ID, PW, UpDownList_Model.rowCount(), DownloadMode, TransmissionMode, serverIP, serverPort, 0);
 		UpDownList_Model.setItem(newtask->Row, 0, new QStandardItem(QString::fromLocal8Bit("等待下载")));
-		UpDownList_Model.setItem(newtask->Row, 1, new QStandardItem(Sour));
-		UpDownList_Model.setItem(newtask->Row, 2, new QStandardItem(Dest));
+		UpDownList_Model.setItem(newtask->Row, 1, new QStandardItem(QString::fromLocal8Bit(Sour)));
+		UpDownList_Model.setItem(newtask->Row, 2, new QStandardItem(QString::fromLocal8Bit(Dest)));
 		UpDownList_Model.setItem(newtask->Row, 3, new QStandardItem(0));
 		UpDownList_Model.setItem(newtask->Row, 4, new QStandardItem(0));
 		UpDownList_Model.setItem(newtask->Row, 5, new QStandardItem(0));
@@ -472,8 +473,8 @@ bool FTPClient::UploadFile(const char* Dest, const char* Sour)
 	{
 		int row = UpDownList_Model.rowCount();
 		UpDownList_Model.setItem(row, 0, new QStandardItem(QString::fromLocal8Bit("准备上传")));
-		UpDownList_Model.setItem(row, 1, new QStandardItem(Sour));
-		UpDownList_Model.setItem(row, 2, new QStandardItem(Dest));
+		UpDownList_Model.setItem(row, 1, new QStandardItem(QString::fromLocal8Bit(Sour)));
+		UpDownList_Model.setItem(row, 2, new QStandardItem(QString::fromLocal8Bit(Dest)));
 		UpDownList_Model.setItem(row, 3, new QStandardItem(0));
 		UpDownList_Model.setItem(row, 4, new QStandardItem(0));
 		UpDownList_Model.setItem(row, 5, new QStandardItem(0));
@@ -486,14 +487,15 @@ bool FTPClient::UploadFile(const char* Dest, const char* Sour)
 		UpDownloadThread *DT = new UpDownloadThread(newsocket, Dest, Sour, hostip, listenport, TransmissionMode, UpDownList_Model, UploadMode, row, 0);
 		connect(DT, &QThread::finished, DT, &QThread::deleteLater);
 		connect(DT, &QThread::finished, this, &FTPClient::CheckWaitQueue);
+		if (DT->false_flag == 1)return false;
 		DT->start();
 	}
 	else
 	{//超過最大線程數.進入等待隊列
 		Task *newtask = new Task(hostip, Dest, Sour, ID, PW, UpDownList_Model.rowCount(), UploadMode, TransmissionMode, serverIP, serverPort, 0);
 		UpDownList_Model.setItem(newtask->Row, 0, new QStandardItem(QString::fromLocal8Bit("等待上传")));
-		UpDownList_Model.setItem(newtask->Row, 1, new QStandardItem(Sour));
-		UpDownList_Model.setItem(newtask->Row, 2, new QStandardItem(Dest));
+		UpDownList_Model.setItem(newtask->Row, 1, new QStandardItem(QString::fromLocal8Bit(Sour)));
+		UpDownList_Model.setItem(newtask->Row, 2, new QStandardItem(QString::fromLocal8Bit(Dest)));
 		UpDownList_Model.setItem(newtask->Row, 3, new QStandardItem(0));
 		UpDownList_Model.setItem(newtask->Row, 4, new QStandardItem(0));
 		UpDownList_Model.setItem(newtask->Row, 5, new QStandardItem(0));
@@ -522,6 +524,7 @@ void FTPClient::CheckWaitQueue()//線程結束槽
 		else UpDownList_Model.setData(UpDownList_Model.index(temp->Row, 6), DownLoadStatus, Qt::DisplayRole);
 		connect(DT, &QThread::finished, DT, &QThread::deleteLater);
 		connect(DT, &QThread::finished, this, &FTPClient::CheckWaitQueue);
+		if (DT->false_flag == 1) return;
 		DT->start();//線程開始運行
 		delete temp;
 	}
@@ -580,6 +583,7 @@ void FTPClient::ChangeStatus(const QModelIndex &index)
 				UpDownList_Model.itemFromIndex(index.sibling(row, 0))->setText(QString::fromLocal8Bit("下载中"));
 				connect(DT, &QThread::finished, DT, &QThread::deleteLater);
 				connect(DT, &QThread::finished, this, &FTPClient::CheckWaitQueue);
+				if (DT->false_flag == 1)return;
 				DT->start();
 			}
 			else
@@ -604,6 +608,7 @@ void FTPClient::ChangeStatus(const QModelIndex &index)
 				UpDownList_Model.itemFromIndex(index.sibling(row, 0))->setText(QString::fromLocal8Bit("上传中")); 
 				connect(DT, &QThread::finished, DT, &QThread::deleteLater);
 				connect(DT, &QThread::finished, this, &FTPClient::CheckWaitQueue);
+				if (DT->false_flag == 1) return;
 				DT->start();
 			}
 			else
@@ -656,6 +661,7 @@ void FTPClient::dropUpload(QString& Sour)
 
 void FTPClient::dropDownload(QString& Dest, QString& Sour)
 {
+	qDebug() <<"Dest:"<< Dest << "\nSour:" << Sour;
 	FTPClient::DownloadFile(Dest.toLocal8Bit().data(), Sour.toLocal8Bit().data());
 }
 

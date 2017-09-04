@@ -18,21 +18,21 @@ void TreeView::dropEvent(QDropEvent * event)
 	if (event->mimeData()->hasText())
 	{
 		QString Sour = event->mimeData()->text();
-		std::string SourString(Sour.toStdString());//源地址的字符串
+		std::string SourString(Sour.toLocal8Bit());//源地址的字符串
 		int index = SourString.find_last_of('/');//找到最後一個字符為'/'的位置
 		std::string FileName;
 		FileName.assign(SourString, index + 1);//文件名的字符串
 		if (fileinfo.isDir())
 		{
 			QString Dest = fileinfo.absoluteFilePath();
-			Dest.append(QString::fromStdString(FileName));
+			Dest.append(QString::fromLocal8Bit(FileName.data()));
 			qDebug() << Sour << "to" << Dest;
 			emit dropedsomething(Dest, Sour);
 		}
 		else if (fileinfo.isFile())
 		{
 			QString Dest = fileinfo.absolutePath();
-			Dest.append(QString::fromStdString(FileName));
+			Dest.append(QString::fromLocal8Bit(FileName.data()));
 			qDebug() << Sour << "to" << Dest;
 			emit dropedsomething(Dest, Sour);
 		}

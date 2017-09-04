@@ -42,7 +42,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="ID_Line"/>
+      <widget class="QLineEdit" name="ID_Line">
+       <property name="placeholderText">
+        <string>在此輸入用户名</string>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
@@ -52,12 +56,25 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="PW_Line"/>
+      <widget class="QLineEdit" name="PW_Line">
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
+       <property name="placeholderText">
+        <string>在此輸入密码</string>
+       </property>
+      </widget>
      </item>
      <item row="2" column="1">
       <widget class="QPushButton" name="Login_Button">
        <property name="text">
-        <string>登录</string>
+        <string>登录(&amp;Eeter)</string>
        </property>
       </widget>
      </item>
